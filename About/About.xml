@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>Gender</name>
+	<author>dninemfive</author>
+	<packageId>dninemfive.gender</packageId>
+	<supportedVersions>
+		<li>1.1</li>
+		<li>1.2</li>
+	</supportedVersions>
+	<modDependencies>
+		<li>
+			<displayName>Harmony</displayName>
+			<packageId>brrainz.harmony</packageId>
+			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases</downloadUrl>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>Ludeon.RimWorld</li>
+		<li>Ludeon.RimWorld.Royalty</li>
+	</loadAfter>
+	<description>A mod replacing the base game's gender essentialism with a more modern, nuanced view.</description>
+</ModMetaData>
