@@ -20,7 +20,7 @@ namespace RWGender
     /// <summary>
     /// Holds the pronouns for a particular character.
     /// </summary>
-    public struct Pronouns
+    public class Pronouns
     {
         // TODO: handle other languages' gendered first/second person pronouns. Assuming English for now.
         /// <summary>
@@ -36,6 +36,8 @@ namespace RWGender
     {
         public static Pronouns TheyThem, SheHer, HeHim;
 
+        private static Dictionary<Pawn, Pronouns> pronouns;
+
         static PronounUtility()
         {
             // I think RW just constructs reflexive with Pro..Obj + "self" - maybe have something reflecting this in a default constructor?
@@ -44,6 +46,32 @@ namespace RWGender
             // Prohers apparently isn't in the dictionary, will have to be added
             SheHer   = new Pronouns { subjective = "Proshe",  objective = "ProherObj",  depPossessive = "Proher",   indPossessive = "Prohers",   reflexive = "Proherself"  };
             HeHim    = new Pronouns { subjective = "Prohe",   objective = "ProhimObj",  depPossessive = "Prohis",   indPossessive = "Prohis",    reflexive = "Prohimself"  };
+        }
+
+        public static Pronouns Pronouns(this Gender gender)
+        {
+            switch (gender)
+            {
+                default:
+                    return TheyThem;
+                case Gender.Male: return HeHim;
+                case Gender.Female: return SheHer;
+            }
+        }
+
+        public static Pronouns Pronouns(this Pawn pawn)
+        {
+            return pronouns[pawn] ?? pawn.gender.Pronouns();
+        }
+
+        public static string ProSubjective(this Pawn pawn)
+        {
+            return Pronouns(pawn).subjective.Translate();
+        }
+
+        public static string ProDepPossessive(this Pawn pawn)
+        {
+            return Pronouns(pawn).depPossessive.Translate();
         }
     }
 }

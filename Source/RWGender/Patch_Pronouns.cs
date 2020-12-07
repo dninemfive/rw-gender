@@ -48,8 +48,8 @@ namespace RWGender
                 yield return new Rule_String(prefix + "_nameDef", nameShortIndefinite2);
                 Pawn pawn; // get this from the thing id number somehow, then get their pronouns
                            // this does not look possible, currently. May need to revert to using Gender with pronouns
-                yield return new Rule_String(prefix + "_pronoun", gender.GetPronoun());
-                yield return new Rule_String(prefix + "_possessive", gender.GetPossessive());
+                yield return new Rule_String(prefix + "_pronoun", pawn.ProSubjective());
+                yield return new Rule_String(prefix + "_possessive", pawn.ProDepPossessive());
             }
         }
     }
