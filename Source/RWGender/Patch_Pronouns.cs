@@ -10,46 +10,31 @@ using Verse.Grammar;
 
 namespace RWGender
 {
+    /// <summary>
+    /// Patches redirecting references which talk about sex instead of gender (e.g. egg laying) to the phenotype rather than the gender.
+    /// </summary>
     [StaticConstructorOnStartup]
-    static class Patches_Pronouns
+    static class Patches_Sex
     {
-        static Patches_Pronouns()
+        static Patches_Sex()
         {
             new Harmony("com.dninemfive.rwgender").PatchAll();
         }
 
         /// <summary>
-        /// Patches TaleData_Trader.GetRules() to return the pronoun stored in a pawn instead of the gender's pawn, if possible.
+        /// Patches egg laying to look at CompSex instead of pawn.gender
         /// </summary>
-        /// <remarks>
-        /// Should eventually be a transpiler; using a destructive prefix for testing.
-        /// </remarks>
-        [HarmonyPatch(typeof(TaleData_Trader), nameof(TaleData_Trader.GetRules))]
-        public class Patch_TaleData_Trader
+        [HarmonyPatch(typeof(CompEggLayer), "Active", MethodType.Getter)]
+        public class Patch_CompEggLayer
         {
-            [HarmonyPrefix]
-            public bool TaleData_Trader_GetRulesPrefix(string prefix, ref TaleData_Trader __instance, ref IEnumerable<Rule> __result)
+            [HarmonyTranspiler]
+            public IEnumerable<CodeInstruction> CompEggLayer_ActiveTranspiler(IEnumerable<CodeInstruction> instr)
             {
-                __result = GetRulesInternal(__instance, prefix);
-                return false;
-            }
-
-            public IEnumerable<Rule> GetRulesInternal(TaleData_Trader inst, string prefix)
-            {
-                bool isPawn = inst.pawnID >= 0;
-                string name = inst.name;
-                string output = isPawn ? name : Find.ActiveLanguageWorker.WithIndefiniteArticle(name);
-                yield return new Rule_String(prefix + "_nameFull", output);
-                string nameShortIndefinite2 = (!isPawn) ? Find.ActiveLanguageWorker.WithIndefiniteArticle(name, false, false) : name;
-                yield return new Rule_String(prefix + "_indefinite", nameShortIndefinite2);
-                yield return new Rule_String(prefix + "_nameIndef", nameShortIndefinite2);
-                nameShortIndefinite2 = ((!isPawn) ? Find.ActiveLanguageWorker.WithDefiniteArticle(name, false, false) : name);
-                yield return new Rule_String(prefix + "_definite", nameShortIndefinite2);
-                yield return new Rule_String(prefix + "_nameDef", nameShortIndefinite2);
-                Pawn pawn; // get this from the thing id number somehow, then get their pronouns
-                           // this does not look possible, currently. May need to revert to using Gender with pronouns
-                yield return new Rule_String(prefix + "_pronoun", pawn.ProSubjective());
-                yield return new Rule_String(prefix + "_possessive", pawn.ProDepPossessive());
+                List<CodeInstruction> instl = instr.ToList();
+                bool found = false;
+                for(int i = 1; i < instl.Count; i++)
+                {
+                }
             }
         }
     }

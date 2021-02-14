@@ -46,8 +46,43 @@ namespace RWGender
         protected override void FillTab()
         {
             UpdateSize();
-            throw new NotImplementedException();
+            if(SelPawn == null)
+            {
+                return;
+            }
+            // PlayerKnowledgeDatabase.KnowledgeDemonstrated...
+            Func<List<FloatMenuOption>> genderOptions = delegate
+            {
+                // once defs are added, update this to automatically grab gender defs from database
+                List<FloatMenuOption> genders = new List<FloatMenuOption>();
+                // if enabled in mod options, add none gender 
+                genders.Add(new FloatMenuOption("male gender key", delegate
+                {
+                    SelPawn.SetGender(Gender.Male);
+                })); // todo: add extraPartOnGUI
+                genders.Add(new FloatMenuOption("female gender key", delegate
+                {
+                    SelPawn.SetGender(Gender.Female);
+                }));
+                return genders;
+            };
+
             // todo
+        }
+
+        public static void SetGender(this Pawn pawn, Gender newGender)
+        {
+            CompSex sex = pawn.TryGetComp<CompSex>();
+            if(sex != null)
+            {
+                sex.agab = pawn.gender;
+            }
+            else
+            {
+                // add new CompSex,
+                // *then* change gender - creating the compsex first preserves agab
+            }
+            pawn.gender = newGender;
         }
     }
 }
